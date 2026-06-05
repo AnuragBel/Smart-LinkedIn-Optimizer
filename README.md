@@ -29,6 +29,3 @@ Just enter your role, experience level, and skills — and the AI generates ever
 | AI Model | LLaMA 3.3 70B via Groq API |
 | Styling | Tailwind CSS |
 
-## 🚀 Getting Started
-
-### 1. Clone the repo

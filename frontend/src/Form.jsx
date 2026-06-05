@@ -20,7 +20,7 @@ export default function Form({ onResult, onLoading }) {
     if (!finalRole || !experience) return
     onLoading(true)
     try {
-      const res = await axios.post('http://localhost:5000/api/recommend', {
+      const res = await axios.post('https://smart-linkedin-optimizer-api.onrender.com/api/recommend', {
         role: finalRole, experience, skills
       })
       onResult(res.data.data, finalRole)
