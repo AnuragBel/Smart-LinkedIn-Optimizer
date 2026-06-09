@@ -4,7 +4,9 @@ require('dotenv').config()
 const { getProfileSuggestions } = require('./groq')
 
 const app = express()
-app.use(cors())
+app.use(cors({
+  origin: '*'
+}))
 app.use(express.json())
 
 app.post('/api/recommend', async (req, res) => {
