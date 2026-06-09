@@ -15,22 +15,34 @@ export default function Form({ onResult, onLoading }) {
   const [skills, setSkills] = useState('')
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const finalRole = role === 'other' ? customRole : role
-    if (!finalRole || !experience) return
-    onLoading(true)
+  e.preventDefault()
+  const finalRole = role === 'other' ? customRole : role
+  if (!finalRole || !experience) return
+  onLoading(true)
+
+  // Retry up to 3 times (handles Render cold start)
+  let attempts = 0
+  while (attempts < 3) {
     try {
-      const res = await axios.post('https://smart-linkedin-optimizer-api.onrender.com/api/recommend', {
-        role: finalRole, experience, skills
-      })
+      const res = await axios.post(
+        'https://smart-linkedin-optimizer-api.onrender.com/api/recommend',
+        { role: finalRole, experience, skills },
+        { timeout: 60000 } // wait 60 seconds
+      )
       onResult(res.data.data, finalRole)
-    } catch {
-      alert('Something went wrong. Try again.')
-    } finally {
       onLoading(false)
+      return
+    } catch (err) {
+      attempts++
+      if (attempts === 3) {
+        alert('Server is waking up, please try again in 30 seconds.')
+        onLoading(false)
+      } else {
+        await new Promise(r => setTimeout(r, 5000)) // wait 5 seconds before retry
+      }
     }
   }
-
+}
   const inputClass = "w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
 
   return (
